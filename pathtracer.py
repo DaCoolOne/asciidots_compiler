@@ -23,15 +23,20 @@ class path:
 		
 		crawl_dir = dir
 		
+		self.start_id = map.id(self.start_x, self.start_y) + compact(dir)
+		
 		x, y = move_crawl(start_x, start_y, crawl_dir)
 		
 		trace = []
+		crawl_step = 1
 		
 		while not map.get(x, y).special:
 			
 			# print(x, y)
 			
-			m_id = map.id(x, y)
+			crawl_step += 1
+			
+			m_id = map.id(x, y) + compact(crawl_dir)
 			
 			# Crawler has gone in a loop
 			if m_id in trace:
@@ -65,7 +70,9 @@ class path:
 		self.end_x = x
 		self.end_y = y
 		self.end_dir = crawl_dir
-		self.length = len(trace)
+		self.length = crawl_step
+		
+		self.end_id = map.id(self.end_x, self.end_y) + compact(crawl_dir)
 		
 		self.complete = True
 		
@@ -74,11 +81,14 @@ class path_tracer:
 	def __init__(self, map):
 		# List of all paths
 		self.paths = {}
+		self.init_paths = []
 		for i in range(map.width):
 			for j in range(map.height):
 				c = map.get(i, j)
 				if c.special == SPECIAL.START:
-					self.create_path(map, i, j)
+					id = self.create_path(map, i, j)
+					if id:
+						self.init_paths.append(id)
 		
 		for p in self.paths:
 			path = self.paths[p]
@@ -110,7 +120,9 @@ class path_tracer:
 		print(id, p.complete)
 		if p.complete:
 			self.paths[id] = p
-			self._branch_path(map, p.end_x, p.end_y)
+			if map.get(p.end_x, p.end_y).special != SPECIAL.END:
+				self._branch_path(map, p.end_x, p.end_y)
+			return id
 		
 	def _branch_path(self, map, start_x, start_y):
 		# Look at spawnable directions and send a path out in each direction
@@ -118,5 +130,4 @@ class path_tracer:
 		self.create_path(map, start_x, start_y, DIRECTION.DOWN)
 		self.create_path(map, start_x, start_y, DIRECTION.LEFT)
 		self.create_path(map, start_x, start_y, DIRECTION.RIGHT)
-		
 

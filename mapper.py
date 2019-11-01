@@ -11,7 +11,14 @@ class warp:
 		self.link_bx = bx
 		self.link_by = by
 
-class map:
+class grid:
+	def __init__(self, width, height):
+		self.width = width
+		self.height = height
+	def id(self, x, y):
+		return (x * self.height + y) * 4 # Times 4 allows us to fit directions in as well.
+
+class map(grid):
 	def __init__(self, filepath):
 		self.width = 0
 		self.height = 0
@@ -46,8 +53,6 @@ class map:
 				if len(self.cells[i]) >= j:
 					self.cells[i].append(get_character(" "))
 		
-	def id(self, x, y):
-		return (x * self.height + y) * 4 # Times 4 allows us to fit directions in as well.
 	def get(self, x, y):
 		if x < 0 or y < 0 or x >= self.width or y >= self.height:
 			return SPACE_CHARACTER
@@ -55,7 +60,8 @@ class map:
 			return self.cells[y][x]
 	def link_warps(self):
 		self.warps = []
-		
+	def simplify(self):
+		return grid(self.width, self.height)
 
 
 

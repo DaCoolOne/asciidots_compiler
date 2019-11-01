@@ -43,7 +43,7 @@ def compact(dir):
 	if dir == DIRECTION.NONE:
 		return -1
 	else:
-		return (dir & 2) + (dir & 4) * 2 + (dir & 8) * 3
+		return ((dir & 2) >> 1) + ((dir & 4) >> 1) + ((dir & 8) >> 3) * 3
 
 class character:
 	def __init__(self, direction, guide, special = SPECIAL.NONE, char = ""):

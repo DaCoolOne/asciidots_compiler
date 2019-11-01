@@ -1,43 +1,65 @@
 
 
-# Executes pathtracer using a list queue thingy.
+from pathtracer import path_tracer
+from mapper import map
 
-# Current instruction is pushed to the queue with a time of execution.
+class QueuePoint:
+	def __init__(self, t, id):
+		self.time = t
+		self.id = id
+		self.next = None
 
-# Each operation has an input queue with an id for direction. Items are appended to queue if id matches. Otherwise items are 
+class ControlQueue:
+	def __init__(self):
+		self.start = None
+	def insert(self, qp):
+		p = self.start
+		while not p.next is None or p.next.time > qp.time:
+			p = p.next
+		
+		n = p.next
+		p.next = qp
+		qp.next = n
+	def pop(self):
+		n = self.start
+		if n is None:
+			return None
+		
+		self.start = n.next
+		
+		return n
+		
 
-"""
+# Assumes that the file exists. Creates the file and runs it.
+class Compiler:
+	def __init__(self, file_name):
+		
+		m = map("script.dots")
+		self.path_tracer = path_tracer(m)
+		
+	# Initializes the enviroment
+	def initialize(self):
+		
+		self.control_queue = ControlQueue()
+		
+		for id in path_trace.init_paths:
+			self.control_queue.append()
+		
+	def step(self):
+		pass
+	def run(self, x, y):
+		while not self.step():
+			pass
 
-.-*-#1-{+}-$#-&
-  \-#1--/
 
-     |
-     |
-     v
 
-1. (0) Create dots. Place split operation in the queue at t = 2.
-2. (2) Split operation places two set operations into the queue at t = 4 and t = 5
-3. (4) First set operation. Places add_place operation into the queue at t = 8
-4. (5) Second set operation. Places add_place operation into the queue at t = 10
-5. (8) Queue id set to horizontal. Value placed in horizontal queue.
-6. (10) Queue performs add operation on a + b and places print operation into the queue at t = 14.
-7. (11) Value outputed to console. End operation placed at t = 16.
-8. End of program. 16 tick program run in just 8 ticks.
 
-"""
 
-import traceback
 
-try:
-	
-	from pathtracer import path_tracer
-	from mapper import map
-	
-	m = map("script.dots")
-	pathtracer = path_tracer(m)
-	
-except Exception as e:
-	print(traceback.format_exc())
 
-while True:
-	pass
+
+
+
+
+
+
